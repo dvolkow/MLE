@@ -1,0 +1,24 @@
+From MLE_START = [8, 14, 10, 20, 4]
+   fun: 145629.33650741613
+     jac: array([ 0.56640625,  0.44335938, -0.03710938,  0.16796875,  0.015625  ])
+ message: 'Desired error not necessarily achieved due to precision loss.'
+    nfev: 1489
+     nit: 53
+    njev: 211
+  status: 2
+ success: False
+       x: array([  8.14507434,  12.22595401, -11.80386185, -30.10538953,
+         5.95527701])
+
+From MLE_START = [8, 16, 12, 24, 6]
+     fun: 145629.33449549874
+     jac: array([ 0.06054688,  0.11328125, -0.08398438, -0.03710938,  0.04101562])
+ message: 'Desired error not necessarily achieved due to precision loss.'
+    nfev: 2007
+     nit: 65
+    njev: 285
+  status: 2
+ success: False
+       x: array([  8.13897782,  12.22594245, -11.79460868, -30.10273102,
+         5.93871013])
+
