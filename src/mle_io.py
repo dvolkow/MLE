@@ -1,9 +1,10 @@
 #! /usr/bin/env python3
 import csv
+import numpy as np
 from math import radians
 import mle_core
 
-DATASET_FILE = "../data/apogee-rc-DR14-back.csv"
+DATASET_FILE = "../data/apogee-rc-DR14-full.csv"
 
 
 '''
@@ -13,18 +14,17 @@ def read_dataset():
     data = mle_core.Data()
     f = open(DATASET_FILE, 'r')
     reader = csv.reader(f)
+    l, b, vr, r = ([], [], [], [])
     for row in reader:
-        data.l.append(radians(float(row[0])))
-        data.b.append(radians(float(row[1])))
-        data.vr.append(float(row[2]))
-        data.r.append(float(row[3]))
+        l.append(radians(float(row[0])))
+        b.append(radians(float(row[1])))
+        vr.append(float(row[2]))
+        r.append(float(row[3]))
 
-    '''
-    print(data.l[0])
-    print(data.b[0])
-    print(data.vr[0])
-    print(data.r[0])
-    '''
+    data.l = np.array(l)
+    data.b = np.array(b)
+    data.vr = np.array(vr)
+    data.r = np.array(r)
     print("Data is success readed, size = " + 
             str(len(data.l)))
     return data

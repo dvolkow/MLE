@@ -24,10 +24,10 @@ def not_implemented(function):
 @vr: radial velocity (kmps)
 '''
 class Data:
-    l  = []
-    b  = []
-    r  = []
-    vr = []
+    l  = np.array([])
+    b  = np.array([])
+    r  = np.array([])
+    vr = np.array([])
 
 
 
@@ -41,23 +41,22 @@ class Data:
 @beta[2]   = -sin(l)
 '''
 class Cache:
-    distcos  = []
-    dblcos   = []
-    lsinbcos = []
-    beta     = [[] for i in range(BETA_SIZE)]
+    distcos  = np.array([])
+    dblcos   = np.array([])
+    lsinbcos = np.array([])
+    beta     = [np.array([]) for i in range(BETA_SIZE)]
 
-    def __init__(self, Data):
-        for i in range(len(Data.b)):
-            self.distcos.append(Data.r[i] ** 2 * math.cos(Data.b[i]) ** 2)
-            self.dblcos.append(2 * math.cos(Data.b[i]) * math.cos(Data.l[i]) *
-                    Data.r[i])
-            self.lsinbcos.append(math.sin(Data.l[i]) * math.cos(Data.b[i]))
-            self.beta[0].append(- math.cos(Data.l[i]) * math.cos(Data.b[i])) 
-            self.beta[1].append(- math.sin(Data.l[i]) * math.cos(Data.b[i])) 
-            self.beta[2].append(- math.sin(Data.b[i])) 
+    def __init__(self, data):
+        self.distcos  = data.r * data.r * np.cos(data.b) * np.cos(data.b)
+        self.dblcos   = np.array([2 for i in range(len(data.b))]) * data.r * np.cos(data.b) * np.cos(data.l) 
+        self.lsinbcos = np.sin(data.l) * (np.cos(data.b))
+        self.beta[0]  = - np.cos(data.l) * np.cos(data.b)
+        self.beta[1]  = - np.sin(data.l) * np.cos(data.b) 
+        self.beta[2]  = - np.sin(data.b) 
 
-    def r(self, r0, i):
-        return math.sqrt(r0 ** 2 + self.distcos[i] - r0 * self.dblcos[i])
+    def r(self, r0):
+        return np.sqrt(np.array([r0 ** 2 for i in range(len(data.b))]) + 
+                self.distcos - np.array([r0 for i in range(len(data.b))])* self.dblcos)
 
 
 
@@ -77,11 +76,11 @@ g_cache = Cache(data)
 TODO: create fabrique \ another generator 
       for such functions as vr
 '''
-def v_sun(u, v, w, i):
-    return -u * g_cache.beta[0][i] - v * g_cache.beta[1][i] - w * math.sin(data.b[i])
+def v_sun(u, v, w):
+    return -u * g_cache.beta[0] - v * g_cache.beta[1] - w * np.sin(data.b)
 
-def vr_calc(R_0, A, i):
-    return -2 * A * (g_cache.r(R_0, i) - R_0) * R_0 / (g_cache.r(R_0, i)) * math.sin(data.l[i]) * math.cos(data.b[i]) 
+def vr_calc(R_0, A):
+    return -2 * A * (g_cache.r(R_0) - R_0) * R_0 / (g_cache.r(R_0)) * np.sin(data.l) * np.cos(data.b) 
 
 
 
@@ -100,28 +99,17 @@ Only 1st degress of estimation polynom
 TODO: extend to more freedoms
 '''
 def likelyhood_log(parameters):
-    R_0   = parameters[0]
-    A     = parameters[1]
-    u     = parameters[2]
-    v     = parameters[3]
-    w     = parameters[4]
-    #sigma = parameters[5]
-    #assert(sigma > 0)
+    R_0, A, u, v, w   = parameters
 
-    vr = [0 for i in range(len(data.l))]
+    vr = vr_calc(R_0, A) + v_sun(u, v, w)
 
-    for i in range(len(data.l)):
-        vr[i] = vr_calc(R_0, A, i) + v_sun(u, v, w, i)
+    sigma = np.std(vr)
 
-    sigma = stdev(vr)
-
-    L     = - len(data.l) * math.log(math.sqrt(2 * math.pi) * sigma)    
-    for i in range(len(data.l)):
-        L -=  (vr[i] - data.vr[i])**2 / (2 * sigma ** 2)
+    L = - len(data.l) * math.log(math.sqrt(2 * math.pi) * sigma)    
+    L -= np.sum(np.power(vr - data.vr, 2)) / (2 * sigma ** 2)
     
     print(R_0, A, sigma, u, v, w)
     return -L
-
 
 
 def vr_optimize():
