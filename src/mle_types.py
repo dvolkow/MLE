@@ -44,7 +44,7 @@ class Cache:
 
     def __init__(self, data):
         self.distcos  = data.r * data.r * np.cos(data.b) * np.cos(data.b)
-        self.dblcos   = np.array([2 for i in range(len(data.b))]) * data.r * np.cos(data.b) * np.cos(data.l) 
+        self.dblcos   = np.repeat(2, len(data.b)) * data.r * np.cos(data.b) * np.cos(data.l) 
         self.lsinbcos = np.sin(data.l) * (np.cos(data.b))
         self.beta[0]  = - np.cos(data.l) * np.cos(data.b)
         self.beta[1]  = - np.sin(data.l) * np.cos(data.b) 
@@ -52,7 +52,7 @@ class Cache:
 
     def r(self, r0, data):
         return np.sqrt(np.array([r0 ** 2 for i in range(len(data.b))]) + 
-                self.distcos - np.array([r0 for i in range(len(data.b))])* self.dblcos)
+                self.distcos - np.repeat(r0, len(data.b)) * self.dblcos)
 
 
 

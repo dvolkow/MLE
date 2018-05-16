@@ -28,7 +28,7 @@ g_cache = Cache(data)
 
 
 def v_sun(u, v, w):
-    return -u * g_cache.beta[0] - v * g_cache.beta[1] - w * np.sin(data.b)
+    return -u * g_cache.beta[0] - v * g_cache.beta[1] - w * g_cache.beta[2]
 
 
 def vr_calc(R_0, A, n = 1, theta = None):
@@ -65,7 +65,7 @@ def likelyhood_log(parameters):
         v   = parameters[3]
         w   = parameters[4]
         theta = list(parameters[DEFAULT_PARAM_COUNT + 1:])
-    vr = vr_calc(R_0, A, n = n, theta = theta) + v_sun(u, v, w)
+    vr = vr_calc(R_0, A, n = n, theta = theta) - v_sun(u, v, w)
 
     sigma = np.std(vr)
 
