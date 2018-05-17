@@ -51,7 +51,7 @@ class Cache:
         self.beta[2]  = - np.sin(data.b) 
 
     def r(self, r0, data):
-        return np.sqrt(np.array([r0 ** 2 for i in range(len(data.b))]) + 
+        return np.sqrt(np.repeat(r0 ** 2, len(data.b)) + 
                 self.distcos - np.repeat(r0, len(data.b)) * self.dblcos)
 
 

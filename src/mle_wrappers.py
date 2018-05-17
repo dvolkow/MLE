@@ -1,6 +1,9 @@
 #! /usr/bin/env python3
 from mle_types import ModelParameters
 from mle_cfg import DEFAULT_PARAM_COUNT
+from mle_cfg import THETA_START_IDX
+
+g_mle_sigma = 0
 
 '''
 Warning about incomplete function
@@ -14,22 +17,28 @@ Output to stdout parameters that was finded
 here, @mparameters is ModelParameters type
 '''
 def mle_print_solution(mparameters):
-    print("--------MLE_SOLUTION:--------")
-    print("LF value ", mparameters.lf)
-    print("sigma: ", mparameters.w)
+    print("sigma: ", mparameters.sigma)
     print("R_0:   ", mparameters.R_0)
     print("A:     ", mparameters.A)
     print("u:     ", mparameters.u)
     print("v:     ", mparameters.v)
     print("w:     ", mparameters.w)
     for i in range(len(mparameters.theta)):
-        print("theta{i}: ".format(i = i), mparameters.theta[i])
+        print("theta{i}: ".format(i = THETA_START_IDX + i), mparameters.theta[i])
 
+def mle_solution_show(mparameters):
+    print("--------MLE_SOLUTION:--------")
+    mle_print_solution(mparameters)
+
+def lse_solution_show(mparameters):
+    print("--------LSE_SOLUTION:--------")
+    mle_print_solution(mparameters)
 
 '''
 Otput parameters 
 '''
 def optimize_out(function):
+    global g_mle_sigma
     def optimize_out_dbg(f, start_values, optimize_type):
         model = function(f, start_values, optimize_type)
         print("\nSolution get with {status} status and stopped.".format(status = model["success"]))
@@ -42,10 +51,12 @@ def optimize_out(function):
         mp.u   = model["x"][2]
         mp.v   = model["x"][3]
         mp.w   = model["x"][4]
+        mp.sigma = g_mle_sigma
         for i in range(len(model["x"][DEFAULT_PARAM_COUNT + 1:])):
             mp.theta.append(model["x"][DEFAULT_PARAM_COUNT + 1 + i])
 
-        mle_print_solution(mp)
+        #mle_print_solution(mp)
+        return mp
     return optimize_out_dbg
 
 

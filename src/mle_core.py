@@ -72,6 +72,7 @@ def likelyhood_log(parameters):
     L = - len(data.l) * math.log(math.sqrt(2 * math.pi) * sigma)    
     L -= np.sum(np.power(vr - data.vr, 2)) / (2 * sigma ** 2)
     
+    wps.g_mle_sigma = sigma
     return -L, sigma
 
 

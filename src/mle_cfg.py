@@ -11,9 +11,8 @@ MLE_START = np.array([
     12, # v
     24, # u
     6,  # w
-    2]) # theta_2
+    2]),  # theta_2
 '''
     1,  # theta_3
-    0,  # theta_4
-    0]) # theta_5 etc.
+    0]) # theta_4
 '''
