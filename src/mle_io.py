@@ -5,6 +5,7 @@ from math import radians
 import mle_core
 
 DATASET_FILE = "../data/apogee-rc-DR14-full.csv"
+REFERENCE_FILE = "../result/ref.lse"
 
 
 '''
@@ -28,3 +29,20 @@ def read_dataset():
     print("Data is success readed, size = " + 
             str(len(data.l)))
     return data
+
+'''
+reference LSE result 
+'''
+def read_reference(n):
+    refdata = mle_core.ModelParameters()
+    with open(REFERENCE_FILE, 'r') as f:
+        tg = f.readlines()[n - 1].split()
+        refdata.R_0 = float(tg[1])
+        refdata.sigma = float(tg[4])
+        refdata.u = float(tg[5])
+        refdata.v = float(tg[6])
+        refdata.w = float(tg[7])
+        refdata.A = float(tg[8])
+        for i in range(len(tg[9:])):
+            refdata.theta.append(float(tg[9 + i]))
+    return refdata
